@@ -3,11 +3,12 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
-console.log(user)
+  console.log(user);
   React.useEffect(() => {
     if (!isAuthenticated) router.push("/auth");
   }, [isAuthenticated, router]);
@@ -16,13 +17,24 @@ console.log(user)
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
-        <span>Welcome, {user?.full_name}</span>
-        <button onClick={logout} className="bg-red-500 px-3 py-1 rounded">
-          Logout
-        </button>
-      </header>
-      <main className="flex-1 p-4">{children}</main>
+      <div className="flex">
+        <div className="w-full">
+          <header className=" text-gray-600 flex justify-between items-center shadow-md">
+            <Image
+              src="/images/logo.jpg"
+              alt="brand"
+              width={130}
+              height={50}
+              className="object-contain"
+            />
+            <span>Welcome, {user?.full_name}</span>
+            <button onClick={logout} className="bg-red-500 px-3 py-1 rounded">
+              Logout
+            </button>
+          </header>
+          <main className="flex-1">{children}</main>
+        </div>
+      </div>
     </div>
   );
 };

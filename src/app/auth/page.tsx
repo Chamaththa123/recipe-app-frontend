@@ -3,12 +3,20 @@
 import React, { useState } from "react";
 import Login from "../../components/auth/login";
 import Register from "../../components/auth/register";
+import Image from "next/image";
 
 const LoginPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="w-[500px] bg-white p-6 rounded-xl shadow-lg">
+        <Image
+                src="/images/logo.jpg"
+                alt="brand"
+                width={180}
+                height={50}
+                className="object-contain"
+              />
         <div className="flex mb-6 ">
           <button
             className={`flex-1 py-2 text-center ${
