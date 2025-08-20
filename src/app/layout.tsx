@@ -1,6 +1,6 @@
 import React from "react";
 import { AuthProvider } from "../context/AuthContext";
-// import "../styles/globals.css";
+import "./globals.css";
 
 const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (

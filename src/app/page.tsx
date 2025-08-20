@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 const HomePage = () => {
-  redirect("/guest/login");
+  redirect("/auth");
   return null;
 };
 

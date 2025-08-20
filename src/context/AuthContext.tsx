@@ -9,12 +9,13 @@ import React, {
 } from "react";
 import Cookies from "js-cookie";
 import axiosClient from "@/api/axiosClient";
+import { toast } from "react-toastify"; // <-- import toast
+import "react-toastify/dist/ReactToastify.css";
 
 interface User {
-  id: string;
-  name: string;
+  _id: string;
+  full_name: string;
   email: string;
-  role?: string;
 }
 
 interface AuthContextType {
@@ -57,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const res = await axiosClient("/login", {
+      const res = await axiosClient("users/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
@@ -70,8 +71,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       Cookies.set("_user", JSON.stringify(userData), { expires: 7 });
       Cookies.set("_auth", authToken, { expires: 7 });
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/recipe/dashboard";
+      }
     } catch (err: any) {
-      throw new Error(err?.data?.message || "Login failed");
+      toast.error(`${err.data.error}`);
     }
   };
 
@@ -81,7 +86,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     Cookies.remove("_user");
     Cookies.remove("_auth");
     if (typeof window !== "undefined") {
-      window.location.href = "/guest/login";
+      window.location.href = "/auth";
     }
   };
 
