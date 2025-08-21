@@ -12,12 +12,14 @@ import axiosClient from "@/api/axiosClient";
 import { toast } from "react-toastify"; // <-- import toast
 import "react-toastify/dist/ReactToastify.css";
 
+//user structure
 interface User {
   _id: string;
   full_name: string;
   email: string;
 }
 
+//auth context structure
 interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -26,6 +28,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
+//creat context woth default value
 const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
@@ -56,6 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
+  //login function and after login update cookies
   const login = async (email: string, password: string) => {
     try {
       const res = await axiosClient("users/login", {
@@ -85,6 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  //logout fucntion and after logout clear cookies
   const logout = () => {
     setUser(null);
     setToken(null);

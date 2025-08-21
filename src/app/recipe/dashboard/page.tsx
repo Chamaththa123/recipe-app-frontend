@@ -30,11 +30,13 @@ const DashboardPage: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  //handle category selection
   const handleCategorySelect = (name: string) => {
     setSelectedCategory(name);
     setCurrentPage(1);
   };
 
+  //fetch recipe and favourite recipes
   useEffect(() => {
     if (!selectedCategory) return;
 
@@ -64,6 +66,8 @@ const DashboardPage: React.FC = () => {
     fetchFavorites();
   }, [selectedCategory]);
 
+
+// Add recipe to favorites
   const handleAddFavorite = async (recipe: Recipe) => {
     try {
       await axiosClient("favorites", {
@@ -80,6 +84,7 @@ const DashboardPage: React.FC = () => {
   const isFavorite = (idMeal: string) =>
     favorites.some((fav) => fav.idMeal === idMeal);
 
+  // Remove recipe from favorites
   const handleRemoveFavorite = async (idMeal: string) => {
     try {
       await axiosClient(`favorites/${idMeal}`, { method: "DELETE" });
@@ -90,16 +95,19 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+   // Open modal
   const openModal = (idMeal: string) => {
     setSelectedRecipeId(idMeal);
     setIsModalOpen(true);
   };
 
+   // Close modal
   const closeModal = () => {
     setSelectedRecipeId(null);
     setIsModalOpen(false);
   };
 
+  // Pagination logic
   const totalPages = Math.ceil(recipes.length / ITEMS_PER_PAGE);
   const currentRecipes = recipes.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,

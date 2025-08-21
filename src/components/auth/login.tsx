@@ -3,9 +3,10 @@
 import React from "react";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { ToastContainer } from "react-toastify";
-import { ApiError } from "@/api/axiosClient";
+import { toast, ToastContainer } from "react-toastify";
+import { ProcessingIcon } from "@/utils/icons";
 
+//formdata structure
 interface LoginFormData {
   email: string;
   password: string;
@@ -27,6 +28,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<LoginErrors>({});
 
+  // handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -39,6 +41,7 @@ const Login: React.FC = () => {
     }));
   };
 
+  //validate user input
   const validate = (): boolean => {
     const newErrors: LoginErrors = {};
 
@@ -64,9 +67,8 @@ const Login: React.FC = () => {
 
     try {
       await login(formData.email, formData.password);
-    } catch (err: unknown) {
-      const error = err as ApiError<{ message?: string }>;
-      console.error("Error removing favorite:", error.data?.message ?? error);
+    } catch {
+      toast.error("Login Fail");
     } finally {
       setLoading(false);
     }
@@ -113,7 +115,13 @@ const Login: React.FC = () => {
             disabled={loading}
             className="w-full bg-[#FF795E] text-white py-2 rounded-lg hover:bg-[#ff8d76] cursor-pointer"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <ProcessingIcon />
+              </div>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
       </div>

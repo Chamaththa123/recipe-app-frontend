@@ -20,6 +20,7 @@ const Sidebar: React.FC<CategoryProps> = ({ handleCategorySelect }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  //fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
@@ -42,6 +43,7 @@ const Sidebar: React.FC<CategoryProps> = ({ handleCategorySelect }) => {
     fetchCategories();
   }, []);
 
+  //handel selected category
   const handleClick = (categoryName: string) => {
     setSelectedCategory(categoryName);
     handleCategorySelect(categoryName);

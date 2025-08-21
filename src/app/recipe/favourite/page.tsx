@@ -27,6 +27,7 @@ const FavouritePage: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  // /fetch favourite recipes
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -43,6 +44,7 @@ const FavouritePage: React.FC = () => {
     fetchFavorites();
   }, []);
 
+  // Remove recipe from favorites
   const handleRemoveFavorite = async (idMeal: string) => {
     try {
       await axiosClient(`favorites/${idMeal}`, {
@@ -55,16 +57,19 @@ const FavouritePage: React.FC = () => {
     }
   };
 
+   // Open modal
   const openModal = (idMeal: string) => {
     setSelectedRecipeId(idMeal);
     setIsModalOpen(true);
   };
 
+     // Close modal
   const closeModal = () => {
     setSelectedRecipeId(null);
     setIsModalOpen(false);
   };
 
+    // Pagination logic
   const totalPages = Math.ceil(favorites.length / ITEMS_PER_PAGE);
   const currentFavorites = favorites.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,

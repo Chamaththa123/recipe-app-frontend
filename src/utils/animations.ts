@@ -34,7 +34,7 @@ export  const pageVariants: Variants = {
     exit:    { opacity: 0, y: -8, transition: { duration: 0.25, ease: "easeIn" } },
   };
 
-
+//grid animation
   export const gridVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
@@ -43,12 +43,13 @@ export  const pageVariants: Variants = {
     },
   };
 
+  //card animation
   export const cardVariants: Variants = {
     hidden: { opacity: 0, y: 18 },
     show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
   };
 
-
+//tab animatrion
   export const tabVariants = {
   hidden: { opacity: 0, x: 30 },
   visible: { opacity: 1, x: 0 },

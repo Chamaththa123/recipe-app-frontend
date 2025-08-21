@@ -11,10 +11,12 @@ const GuestLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Redirect to dashboard if the user is already authenticated
   React.useEffect(() => {
     if (isAuthenticated) router.push("/recipe/dashboard");
   }, [isAuthenticated, router]);
 
+  // Scroll to top whenever the pathname changes
   useEffect(() => {
     const t = setTimeout(() => window.scrollTo(0, 0), 0);
     return () => clearTimeout(t);

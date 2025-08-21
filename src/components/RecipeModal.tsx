@@ -11,7 +11,7 @@ interface RecipeModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
+//recipe data structure
 interface Recipe {
   idMeal: string;
   strMeal: string;
@@ -30,6 +30,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
   const [recipeDetails, setRecipeDetails] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(false);
 
+  //fetch recipe details
   useEffect(() => {
     if (!isOpen || !recipeId) return;
 

@@ -1,10 +1,12 @@
 "use client";
 
 import axiosClient, { ApiError } from "@/api/axiosClient";
+import { ProcessingIcon } from "@/utils/icons";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+//formdata structure
 interface RegisterFormData {
   full_name: string;
   email: string;
@@ -28,6 +30,7 @@ const Register: React.FC = () => {
   const [errors, setErrors] = useState<RegisterErrors>({});
   const [loading, setLoading] = useState(false);
 
+  // handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -41,6 +44,7 @@ const Register: React.FC = () => {
     }));
   };
 
+  //validate user input
   const validate = (): boolean => {
     const newErrors: RegisterErrors = {};
 
@@ -180,7 +184,13 @@ const Register: React.FC = () => {
           disabled={loading}
           className="w-full bg-[#FF795E] text-white py-2 rounded-lg hover:bg-[#ff8d76] cursor-pointer"
         >
-          {loading ? "Registering..." : "Register"}
+          {loading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <ProcessingIcon />
+            </div>
+          ) : (
+            "Register"
+          )}
         </button>
       </form>
       <ToastContainer />
