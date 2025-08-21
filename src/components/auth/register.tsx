@@ -11,6 +11,12 @@ interface RegisterFormData {
   password: string;
 }
 
+interface RegisterErrors {
+  full_name?: string;
+  email?: string;
+  password?: string;
+}
+
 const Register: React.FC = () => {
   const initialFormData: RegisterFormData = {
     full_name: "",
@@ -19,6 +25,7 @@ const Register: React.FC = () => {
   };
 
   const [formData, setFormData] = useState<RegisterFormData>(initialFormData);
+  const [errors, setErrors] = useState<RegisterErrors>({});
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,10 +34,50 @@ const Register: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const validate = (): boolean => {
+    let newErrors: RegisterErrors = {};
+
+    if (!formData.full_name) {
+      newErrors.full_name = "Full name is required";
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (!isPasswordValid(formData.password)) {
+      newErrors.password = "Password does not meet all requirements";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const isPasswordValid = (password: string): boolean => {
+    const rules = [
+      password.length >= 6,
+      /[A-Z]/.test(password),
+      /\d/.test(password),
+      /[^A-Za-z0-9]/.test(password),
+    ];
+    return rules.every(Boolean);
   };
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
+    if (!validate()) return;
     setLoading(true);
 
     try {
@@ -43,12 +90,26 @@ const Register: React.FC = () => {
 
       setFormData(initialFormData);
     } catch (err: unknown) {
-  const error = err as ApiError<{ error?: string }>;
-  toast.error(error.data?.error ?? "Registration failed");
-} finally {
+      const error = err as ApiError<{ error?: string }>;
+      toast.error(error.data?.error ?? "Registration failed");
+    } finally {
       setLoading(false);
     }
   };
+
+  // Password requirements status
+  const passwordChecks = [
+    { label: "At least 6 characters", valid: formData.password.length >= 6 },
+    {
+      label: "At least 1 uppercase letter",
+      valid: /[A-Z]/.test(formData.password),
+    },
+    { label: "At least 1 number", valid: /\d/.test(formData.password) },
+    {
+      label: "At least 1 special character",
+      valid: /[^A-Za-z0-9]/.test(formData.password),
+    },
+  ];
 
   return (
     <div className="w-full p-5 ">
@@ -63,9 +124,11 @@ const Register: React.FC = () => {
             value={formData.full_name}
             onChange={handleChange}
             placeholder="Full Name"
-            required
             className="border border-[#e6e8ed] focus:outline-[#bdbdbd] rounded-lg px-3 py-2 min-w-[250px] text-[15px] w-full mt-2"
           />
+          {errors.full_name && (
+            <p className="text-red-500 text-xs mt-1">{errors.full_name}</p>
+          )}
         </div>
 
         <div>
@@ -73,14 +136,16 @@ const Register: React.FC = () => {
             Email
           </label>
           <input
-            type="email"
+            type="text"
             name="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Email"
-            required
             className="border border-[#e6e8ed] focus:outline-[#bdbdbd] rounded-lg px-3 py-2 min-w-[250px] text-[15px] w-full mt-2"
           />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+          )}
         </div>
 
         <div>
@@ -93,9 +158,21 @@ const Register: React.FC = () => {
             value={formData.password}
             onChange={handleChange}
             placeholder="Password"
-            required
             className="border border-[#e6e8ed] focus:outline-[#bdbdbd] rounded-lg px-3 py-2 min-w-[250px] text-[15px] w-full mt-2"
           />
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+          )}
+          <ul className="mt-2 space-y-1 text-xs">
+            {passwordChecks.map((check, idx) => (
+              <li
+                key={idx}
+                className={check.valid ? "text-green-600" : "text-gray-500"}
+              >
+                {check.label}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <button

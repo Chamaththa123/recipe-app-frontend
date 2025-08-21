@@ -11,6 +11,11 @@ interface LoginFormData {
   password: string;
 }
 
+interface LoginErrors {
+  email?: string;
+  password?: string;
+}
+
 const Login: React.FC = () => {
   const initialFormData: LoginFormData = {
     email: "",
@@ -20,6 +25,7 @@ const Login: React.FC = () => {
 
   const [formData, setFormData] = useState<LoginFormData>(initialFormData);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<LoginErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -27,10 +33,33 @@ const Login: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const validate = (): boolean => {
+    let newErrors: LoginErrors = {};
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setLoading(true);
 
     try {
@@ -52,12 +81,15 @@ const Login: React.FC = () => {
               Email
             </label>
             <input
-              type="email"
+              type="text"
               name="email"
               value={formData.email}
               onChange={handleChange}
               className="border border-[#e6e8ed] focus:outline-[#bdbdbd] rounded-lg px-3 py-2 min-w-[250px] text-[15px] w-full mt-2"
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -71,6 +103,9 @@ const Login: React.FC = () => {
               onChange={handleChange}
               className="border border-[#e6e8ed] focus:outline-[#bdbdbd] rounded-lg px-3 py-2 min-w-[250px] text-[15px] w-full mt-2"
             />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+            )}
           </div>
 
           <button

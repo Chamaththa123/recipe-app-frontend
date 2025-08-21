@@ -10,13 +10,16 @@ const LoginPage: React.FC = () => {
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="w-[500px] bg-white p-6 rounded-xl shadow-lg">
-        <Image
-                src="/images/logo.jpg"
-                alt="brand"
-                width={180}
-                height={50}
-                className="object-contain"
-              />
+        <div className="flex gap-3">
+          <Image
+          src="/images/logo.jpg"
+          alt="brand"
+          width={180}
+          height={50}
+          className="object-contain"
+        />
+        <h2>Recipe APp</h2>
+        </div>
         <div className="flex mb-6 ">
           <button
             className={`flex-1 py-2 text-center ${

@@ -5,7 +5,8 @@ import Sidebar from "../../../components/sidebar";
 import axiosClient, { ApiError } from "@/api/axiosClient";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import { FavouriteIcon } from "@/utils/icons";
+import { FavouriteIcon, ViewIcon } from "@/utils/icons";
+import RecipeModal from "@/components/RecipeModal";
 
 interface Recipe {
   idMeal: string;
@@ -16,10 +17,11 @@ interface Recipe {
 const DashboardPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-
   const [favorites, setFavorites] = useState<Recipe[]>([]);
-
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
 
   const handleCategorySelect = (name: string) => {
 
@@ -94,6 +96,16 @@ const DashboardPage: React.FC = () => {
     }),
   };
 
+  const openModal = (idMeal: string) => {
+    setSelectedRecipeId(idMeal);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedRecipeId(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="flex">
       <Sidebar handleCategorySelect={handleCategorySelect} />
@@ -133,6 +145,12 @@ const DashboardPage: React.FC = () => {
                           {recipe.strMeal}
                         </p>
                         <div className="absolute top-2 right-2">
+                          <button
+                              onClick={() => openModal(recipe.idMeal)}
+                              className="bg-white mr-2 text-white text-xs px-1 py-1 rounded hover:bg-[#ff8d76] cursor-pointer"
+                            >
+                              <ViewIcon />
+                            </button>
                           {isFavorite(recipe.idMeal) ? (
                             <button
                               onClick={() =>
@@ -166,6 +184,13 @@ const DashboardPage: React.FC = () => {
           </p>
         )}
       </div>
+      {isModalOpen && selectedRecipeId && (
+  <RecipeModal
+    recipeId={selectedRecipeId}
+    isOpen={isModalOpen}
+    onClose={closeModal}
+  />
+)}
     </div>
   );
 };
