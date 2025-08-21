@@ -42,7 +42,7 @@ const Register: React.FC = () => {
   };
 
   const validate = (): boolean => {
-    let newErrors: RegisterErrors = {};
+    const newErrors: RegisterErrors = {};
 
     if (!formData.full_name) {
       newErrors.full_name = "Full name is required";

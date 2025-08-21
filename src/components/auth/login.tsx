@@ -40,7 +40,7 @@ const Login: React.FC = () => {
   };
 
   const validate = (): boolean => {
-    let newErrors: LoginErrors = {};
+    const newErrors: LoginErrors = {};
 
     if (!formData.email) {
       newErrors.email = "Email is required";
