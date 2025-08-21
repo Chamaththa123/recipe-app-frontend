@@ -3,14 +3,15 @@
 import React from "react";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import { ApiError } from "@/api/axiosClient";
 
 interface LoginFormData {
   email: string;
   password: string;
 }
 
-const login = () => {
+const Login: React.FC = () => {
   const initialFormData: LoginFormData = {
     email: "",
     password: "",
@@ -34,8 +35,9 @@ const login = () => {
 
     try {
       await login(formData.email, formData.password);
-    } catch (error: any) {
-      console.log(error);
+    } catch (err: unknown) {
+      const error = err as ApiError<{ message?: string }>;
+      console.error("Error removing favorite:", error.data?.message ?? error);
     } finally {
       setLoading(false);
     }
@@ -85,4 +87,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;

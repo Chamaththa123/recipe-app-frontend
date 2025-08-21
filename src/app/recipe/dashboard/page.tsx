@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../../components/sidebar";
-import axiosClient from "@/api/axiosClient";
+import axiosClient, { ApiError } from "@/api/axiosClient";
 import Image from "next/image";
-import { motion, useAnimation, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
+import { FavouriteIcon } from "@/utils/icons";
 
 interface Recipe {
   idMeal: string;
@@ -15,10 +16,13 @@ interface Recipe {
 const DashboardPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+
+  const [favorites, setFavorites] = useState<Recipe[]>([]);
+
   const [loading, setLoading] = useState<boolean>(false);
-  const controls = useAnimation();
+
   const handleCategorySelect = (name: string) => {
-    console.log("Selected Category ID:", name);
+
     setSelectedCategory(name);
   };
 
@@ -39,7 +43,47 @@ const DashboardPage: React.FC = () => {
     };
 
     fetchRecipes();
+
+    const fetchFavorites = async () => {
+      try {
+        const res = await axiosClient("favorites");
+        setFavorites(res || []);
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+      }
+    };
+    fetchFavorites();
   }, [selectedCategory]);
+
+  useEffect(() => {}, []);
+
+  const handleAddFavorite = async (recipe: Recipe) => {
+    try {
+       await axiosClient("favorites", {
+        method: "POST",
+        body: JSON.stringify(recipe),
+      });
+      setFavorites((prev) => [...prev, recipe]);
+    } catch (err: unknown) {
+    const error = err as ApiError<{ message?: string }>;
+    console.error("Error adding favorite:", error.data?.message ?? error);
+  }
+  };
+
+  const isFavorite = (idMeal: string) =>
+    favorites.some((fav) => fav.idMeal === idMeal);
+
+  const handleRemoveFavorite = async (idMeal: string) => {
+    try {
+      await axiosClient(`favorites/${idMeal}`, {
+        method: "DELETE",
+      });
+      setFavorites((prev) => prev.filter((fav) => fav.idMeal !== idMeal));
+    } catch (err: unknown) {
+    const error = err as ApiError<{ message?: string }>;
+    console.error("Error removing favorite:", error.data?.message ?? error);
+  }
+  };
 
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 50 },
@@ -75,18 +119,39 @@ const DashboardPage: React.FC = () => {
                       initial="hidden"
                       animate="visible"
                       variants={fadeUp}
-                      className="border-[1px] border-gray-200 rounded-lg shadow bg-white"
+                      className="relative border-[1px] border-gray-200 rounded-lg shadow bg-white"
                     >
                       <Image
-                        src={recipe.strMealThumb || "/images/fallback.jpg"}
+                        src={recipe.strMealThumb || "/images/fallback.webp"}
                         alt={recipe.strMeal}
                         width={200}
                         height={120}
                         className="rounded-t-lg object-cover h-[150px] w-full"
                       />
-                      <p className="text-[14px] font-semibold px-2 py-1">
-                        {recipe.strMeal}
-                      </p>
+                      <div className="flex justify-between px-2 py-1">
+                        <p className="text-[14px] font-semibold ">
+                          {recipe.strMeal}
+                        </p>
+                        <div className="absolute top-2 right-2">
+                          {isFavorite(recipe.idMeal) ? (
+                            <button
+                              onClick={() =>
+                                handleRemoveFavorite(recipe.idMeal)
+                              }
+                              className="bg-[#FF795E] text-white text-xs px-1 py-1 rounded hover:bg-[#ff8d76] cursor-pointer"
+                            >
+                              <FavouriteIcon />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleAddFavorite(recipe)}
+                              className="bg-white text-white text-xs px-1 py-1 rounded hover:bg-[#ff8d76] cursor-pointer"
+                            >
+                              <FavouriteIcon />
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </motion.div>
                   ))}
                 </>

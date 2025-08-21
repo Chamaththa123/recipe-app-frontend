@@ -1,6 +1,6 @@
 "use client";
 
-import axiosClient from "@/api/axiosClient";
+import axiosClient, { ApiError } from "@/api/axiosClient";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,7 +11,7 @@ interface RegisterFormData {
   password: string;
 }
 
-const register = () => {
+const Register: React.FC = () => {
   const initialFormData: RegisterFormData = {
     full_name: "",
     email: "",
@@ -42,9 +42,10 @@ const register = () => {
       toast.success(`${res}`);
 
       setFormData(initialFormData);
-    } catch (error: any) {
-      toast.error(`${error?.data?.error}`);
-    } finally {
+    } catch (err: unknown) {
+  const error = err as ApiError<{ error?: string }>;
+  toast.error(error.data?.error ?? "Registration failed");
+} finally {
       setLoading(false);
     }
   };
@@ -110,4 +111,4 @@ const register = () => {
   );
 };
 
-export default register;
+export default Register;

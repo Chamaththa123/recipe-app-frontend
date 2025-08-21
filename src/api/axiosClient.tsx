@@ -3,6 +3,7 @@
 import Cookies from "js-cookie";
 
 //base url for api request
+// const BASE_URL = "https://recipe-app-backend-production-3ccf.up.railway.app/api/";
 const BASE_URL = "http://localhost:8000/api/";
 
 interface FetchOptions extends RequestInit {
@@ -10,10 +11,10 @@ interface FetchOptions extends RequestInit {
 }
 
 //error structure for api errors
-interface ApiError {
+export interface ApiError<T = unknown> {
   status: number;
   statusText: string;
-  data?: any;
+  data?: T;
 }
 
 const axiosClient = async (endpoint: string, options: FetchOptions = {}) => {

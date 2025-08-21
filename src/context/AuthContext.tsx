@@ -75,8 +75,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (typeof window !== "undefined") {
         window.location.href = "/recipe/dashboard";
       }
-    } catch (err: any) {
-      toast.error(`${err.data.error}`);
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "data" in err) {
+    const error = err as { data?: { error?: string } };
+    toast.error(error.data?.error);
+  } else {
+    toast.error("Login failed");
+  }
     }
   };
 

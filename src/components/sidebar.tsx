@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import axiosClient from "@/api/axiosClient";
+import axiosClient, { ApiError } from "@/api/axiosClient";
 
 interface Category {
   idCategory: string;
@@ -15,7 +15,6 @@ interface CategoryProps {
 
 const Sidebar: React.FC<CategoryProps> = ({ handleCategorySelect }) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  console.log(categories);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -24,9 +23,11 @@ const Sidebar: React.FC<CategoryProps> = ({ handleCategorySelect }) => {
       try {
         const res = await axiosClient("recipes/categories");
         setCategories(res);
-      } catch (err: any) {
-        console.error("Failed to fetch categories:", err);
-      } finally {
+      } catch (err: unknown) {
+  const error = err as ApiError<{ error?: string }>;
+  console.log(error)
+  // toast.error(error.data?.error ?? "Registration failed");
+} finally {
         setLoading(false);
       }
     };
