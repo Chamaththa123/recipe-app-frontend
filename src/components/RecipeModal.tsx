@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axiosClient, { ApiError } from "@/api/axiosClient";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { CloseIcon } from "@/utils/icons";
 import { modalVariants, textVariants } from "@/utils/animations";
 

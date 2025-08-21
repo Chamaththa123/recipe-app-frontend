@@ -1,21 +1,40 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { pageVariants } from "@/utils/animations";
 
 const GuestLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const {isAuthenticated } = useAuth();
-    const router = useRouter();
-  
-    React.useEffect(() => {
-      if (isAuthenticated) router.push("/recipe/dashboard");
-    }, [isAuthenticated, router]);
-  
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  React.useEffect(() => {
+    if (isAuthenticated) router.push("/recipe/dashboard");
+  }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    const t = setTimeout(() => window.scrollTo(0, 0), 0);
+    return () => clearTimeout(t);
+  }, [pathname]);
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <main>{children}</main>
-    </div>
+    <AnimatePresence mode="wait">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+        <motion.main
+          key={pathname}
+          initial="initial"
+          animate="enter"
+          exit="exit"
+          variants={pageVariants}
+          className="flex-1"
+        >
+          {children}
+        </motion.main>
+      </div>
+    </AnimatePresence>
   );
 };
 

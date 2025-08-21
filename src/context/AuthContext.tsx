@@ -77,11 +77,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     } catch (err: unknown) {
       if (err && typeof err === "object" && "data" in err) {
-    const error = err as { data?: { error?: string } };
-    toast.error(error.data?.error);
-  } else {
-    toast.error("Login failed");
-  }
+        const error = err as { data?: { error?: string } };
+        toast.error(error.data?.error);
+      } else {
+        toast.error("Login failed");
+      }
     }
   };
 

@@ -1,46 +1,44 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { pageVariants } from "@/utils/animations";
+import Header from "@/components/Header";
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isAuthenticated, logout } = useAuth();
+  const pathname = usePathname();
   const router = useRouter();
-  console.log(user);
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (!isAuthenticated) router.push("/auth");
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) return null;
+  useEffect(() => {
+    const t = setTimeout(() => window.scrollTo(0, 0), 0);
+    return () => clearTimeout(t);
+  }, [pathname]);
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex">
-        <div className="w-full">
-          <header className=" text-gray-600 flex justify-between items-center shadow-md">
-            <Image
-              src="/images/logo.jpg"
-              alt="brand"
-              width={130}
-              height={50}
-              className="object-contain"
-            />
-            <Link
-                href="/recipe/favourite"
-                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-              >
-                Favorites
-              </Link>
-            <span>Welcome, {user?.full_name}</span>
-            <button onClick={logout} className="bg-red-500 px-3 py-1 rounded">
-              Logout
-            </button>
-          </header>
-          <main className="flex-1">{children}</main>
-        </div>
+      <div className="flex flex-col w-full">
+        <AnimatePresence mode="wait">
+          {isAuthenticated && (
+            <Header userName={user?.full_name} onLogout={logout} />
+          )}
+          <motion.main
+            key={pathname}
+            initial="initial"
+            animate="enter"
+            exit="exit"
+            variants={pageVariants}
+            className="flex-1"
+          >
+            {isAuthenticated ? children : null}
+          </motion.main>
+        </AnimatePresence>
       </div>
     </div>
   );

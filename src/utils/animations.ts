@@ -26,3 +26,31 @@ export const spinnerAnimation = {
   animate: { rotate: 360 },
   transition: { repeat: Infinity, duration: 1, ease: "linear" },
 };
+
+//page animation
+export  const pageVariants: Variants = {
+    initial: { opacity: 0, y: 8 },
+    enter:   { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+    exit:    { opacity: 0, y: -8, transition: { duration: 0.25, ease: "easeIn" } },
+  };
+
+
+  export const gridVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.06, delayChildren: 0.05 },
+    },
+  };
+
+  export const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 18 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  };
+
+
+  export const tabVariants = {
+  hidden: { opacity: 0, x: 30 },
+  visible: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -30 },
+};

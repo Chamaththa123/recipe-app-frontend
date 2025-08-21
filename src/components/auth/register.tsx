@@ -112,7 +112,7 @@ const Register: React.FC = () => {
   ];
 
   return (
-    <div className="w-full p-5 ">
+    <div className="w-full px-5 ">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-600">
