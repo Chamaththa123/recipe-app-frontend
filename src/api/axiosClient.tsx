@@ -3,8 +3,8 @@
 import Cookies from "js-cookie";
 
 //base url for api request
-// const BASE_URL = "https://recipe-app-backend-production-3ccf.up.railway.app/api/";
-const BASE_URL = "http://localhost:8000/api/";
+const BASE_URL = "https://recipe-app-backend-production-3ccf.up.railway.app/api/";
+// const BASE_URL = "http://localhost:8000/api/";
 
 interface FetchOptions extends RequestInit {
   headers?: HeadersInit;
