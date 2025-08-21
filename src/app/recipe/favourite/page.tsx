@@ -33,7 +33,7 @@ const FavouritePage: React.FC = () => {
         setLoading(true);
         const res = await axiosClient("favorites");
         setFavorites(res || []);
-      } catch (error) {
+      } catch {
         toast.error("Error fetching recipes");
         setFavorites([]);
       } finally {
@@ -50,7 +50,7 @@ const FavouritePage: React.FC = () => {
       });
       setFavorites((prev) => prev.filter((fav) => fav.idMeal !== idMeal));
       toast.success(`Recipe removed from favorites.`);
-    } catch (err: unknown) {
+    } catch {
       toast.error("Error removing favorite Recipes");
     }
   };

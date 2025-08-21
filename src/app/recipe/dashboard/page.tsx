@@ -57,7 +57,7 @@ const DashboardPage: React.FC = () => {
       try {
         const res = await axiosClient("favorites");
         setFavorites(res || []);
-      } catch (error) {
+      } catch {
         toast.error("Error fetching recipes");
       }
     };
@@ -72,7 +72,7 @@ const DashboardPage: React.FC = () => {
       });
       setFavorites((prev) => [...prev, recipe]);
       toast.success(`"${recipe.strMeal}" added to favorites!`);
-    } catch (err: unknown) {
+    } catch {
       toast.error("Error adding favorite Recipes");
     }
   };
@@ -85,7 +85,7 @@ const DashboardPage: React.FC = () => {
       await axiosClient(`favorites/${idMeal}`, { method: "DELETE" });
       setFavorites((prev) => prev.filter((fav) => fav.idMeal !== idMeal));
       toast.success(`Recipe removed from favorites.`);
-    } catch (err: unknown) {
+    } catch {
       toast.error("Error removing favorite Recipes");
     }
   };
